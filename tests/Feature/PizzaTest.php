@@ -94,4 +94,35 @@ class PizzaTest extends TestCase
             'deleted_at' => null
         ]);
     }
+
+    public function test_ModificarPizza(){
+        $estructuraEsperable = [
+            'id',
+            'nombre',
+            'precio',
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ];
+
+        $datosDePizza = [
+            "nombre" => "La 24 quesos",
+            "precio" => 1111
+        ];
+
+        $response = $this->put('/api/pizza/5',$datosDePizza);
+        $response -> assertStatus(200);
+        $response -> assertJsonStructure($estructuraEsperable);
+        $response -> assertJsonFragment($datosDePizza);
+        $this->assertDatabaseHas('pizzas', [
+            "id" => 5,
+            "nombre" => "La 24 quesos",
+            "precio" => 1111
+        ]);
+    }
+
+    public function test_ModificarPizzaQueNoExiste(){
+        $response = $this->put('/api/pizza/99999');
+        $response->assertStatus(404);    
+    }
 }
